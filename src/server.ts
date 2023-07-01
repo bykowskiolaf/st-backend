@@ -27,20 +27,20 @@ const generateRandomString = function(length : number) {
 // connect to DB
 connectDB();
 
-const app = express();
+const server = express();
 //session middleware
-app.use(session({
+server.use(session({
   secret: generateRandomString(16),
   name: "session",
   expires: new Date(Date.now() + (24 * 60 * 60 * 1000)),
 }));
 
-app.use(passport.initialize());
+server.use(passport.initialize());
 
 // // static files setup
 // app.use(express.static("public"));
 
-app.get('/dashboard', function(req : any, res : Response){
+server.get('/dashboard', function(req : any, res : Response){
   if(req.session.passport){
     res.send(req.session.passport.user);
   } else {
@@ -51,11 +51,11 @@ app.get('/dashboard', function(req : any, res : Response){
 
 // morgan if development
 if (ENV_MODE === "development") {
-  app.use(morgan("dev"));
+  server.use(morgan("dev"));
 }
 
 try {
-  app.listen(PORT, () =>
+  server.listen(PORT, () =>
     console.debug(`Running in ${ENV_MODE} mode on port ${PORT}.`)
   );
 } catch (error) {
@@ -64,4 +64,4 @@ try {
 }
 
 // routers
-app.use("/api/auth", authRoutes);
+server.use("/api/auth", authRoutes);
